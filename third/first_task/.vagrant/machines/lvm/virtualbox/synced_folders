@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/opt/git/otus_learning/third/first_task","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
