@@ -11,7 +11,7 @@ MACHINES = {
     :disks => {
         :sata1 => {
             :dfile => home + '/VirtualBox VMs/sata1.vdi',
-            :size => 10240,
+            :size => 42000,
             :port => 1
         },
         :sata2 => {
@@ -68,34 +68,31 @@ Vagrant.configure("2") do |config|
         box.vm.provision "shell", inline: <<-SHELL
             mkdir -p ~root/.ssh
             cp ~vagrant/.ssh/auth* ~root/.ssh
-            yum install -y mdadm smartmontools hdparm gdisk rsync
-            pvcreate /dev/sdb /dev/sdc /dev/sdd 
-            vgcreate vg0 /dev/sdb /dev/sdc /dev/sdd 
-            lvcreate -n root -L8G vg0 
-            lvcreate -n home -L1G vg0 
-            lvcreate -n var -m1 -L1G vg0 
-            mkfs.ext4 /dev/vg0/root
-            mkfs.ext4 /dev/vg0/home
-            mkfs.ext4 /dev/vg0/var
-            mount /dev/vg0/root /mnt
-            mkdir /mnt/boot
-            mkdir /mnt/home
-            mkdir /mnt/var
-            mkdir /mnt/proc
-            mkdir /mnt/sys 
-            mkdir /mnt/dev 
-            mount /dev/sda2 /mnt/boot
-            mount /dev/vg0/home /mnt/home
-            mount /dev/vg0/var /mnt/var
-            echo "123
-123
-" | passwd vagrant 
-            cat /etc/fstab | grep -v dev > /home/fs
-            echo "/dev/vg0/root / ext4 defaults 0 0" >> /home/fs 
-            echo "/dev/vg0/home /home ext4 defaults 0 2" >> /home/fs
-            echo "/dev/vg0/var /var ext4 defaults 0 2" >> /home/fs 
-            mv /home/fs /etc/fstab  
-            rsync -av / --exclude='/tmp/*' --exclude='/proc/*' --exclude='/mnt/*' --exclude='/sys/*' --exclude='/dev/*' /mnt    
+            yum install -y mdadm smartmontools hdparm gdisk rsync mc
+            pvcreate /dev/sdb /dev/sdc /dev/sdd
+	    vgextend VolGroup00 /dev/sdb
+	    vgextend VolGroup00 /dev/sdc 
+	    vgextend VolGroup00 /dev/sdd 
+	    lvcreate -n root -L8G VolGroup00
+	    lvcreate -m1 -L2G -n var VolGroup00
+	    lvcreate -n home -L5G VolGroup00
+	    mkfs.xfs /dev/VolGroup00/root
+	    mkfs.xfs /dev/VolGroup00/home
+	    mkfs.xfs /dev/VolGroup00/var
+	    mount /dev/VolGroup00/root /mnt 
+	    mkdir /mnt/home
+	    mkdir /mnt/var
+	    mount /dev/VolGroup00/home /mnt/home
+	    mount /dev/VolGroup00/var /mnt/var
+	    cp -rxa / /mnt 
+	    rm -rf /mnt/boot/* 
+	    sed -i 's/LogVol00/root/' /mnt/etc/fstab
+	    sed -i 's/LogVol00/root/' /boot/grub2/grub.cfg
+	    sed -i 's/LogVol00/root/' /boot/grub2/grub.cfg
+	    echo  '/dev/VolGroup00/home /home xfs defaults 0 2' >> /mnt/etc/fstab
+	    echo  '/dev/VolGroup00/var /var xfs defaults 0 2' >> /mnt/etc/fstab
+	    shutdown -r now 
+	    lvreduce -r -L8G /dev/VolGroup00/LogVol00
             SHELL
   
         end
