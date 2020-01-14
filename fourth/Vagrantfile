@@ -68,12 +68,19 @@ Vagrant.configure("2") do |config|
         box.vm.provision "shell", inline: <<-SHELL
             mkdir -p ~root/.ssh
             cp ~vagrant/.ssh/auth* ~root/.ssh
-            yum install -y mdadm smartmontools hdparm gdisk rsync mc
+            yum install -y mdadm smartmontools hdparm gdisk rsync mc wget vim
             sed -i 's/VolGroup00/vg0/g' /etc/fstab
             sed -i 's/VolGroup00/vg0/g' /boot/grub2/grub.cfg
             vgrename VolGroup00 vg0 
             sed -i 's/VolGroup00/vg0/g' /etc/sysconfig/grub
             sed -i '94i  insmod ext2' /boot/grub2/grub.cfg
+            mkdir /usr/lib/dracut/modules.d/01test
+            wget https://owncloud.research.ru.com/index.php/s/U4X5GJjqN74zscG/download
+            mv download /usr/lib/dracut/modules.d/01test/test.sh
+            wget https://owncloud.research.ru.com/index.php/s/mnpQyjVo9c2QtjM/download
+            mv download /usr/lib/dracut/modules.d/01test/module-setup.sh
+            chmod 777 /usr/lib/dracut/modules.d/01test/*
+            dracut -f -v
             init 6
             SHELL
   
