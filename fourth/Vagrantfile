@@ -73,6 +73,7 @@ Vagrant.configure("2") do |config|
             sed -i 's/VolGroup00/vg0/g' /boot/grub2/grub.cfg
             vgrename VolGroup00 vg0 
             sed -i 's/VolGroup00/vg0/g' /etc/sysconfig/grub
+            sed -i 's/VolGroup00/vg0/g' /etc/default/grub
             sed -i '94i  insmod ext2' /boot/grub2/grub.cfg
             mkdir /usr/lib/dracut/modules.d/01test
             wget https://owncloud.research.ru.com/index.php/s/U4X5GJjqN74zscG/download
