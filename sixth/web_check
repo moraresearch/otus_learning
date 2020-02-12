@@ -1,0 +1,1 @@
+00 * * * * /opt/git/otus_learning/sixth/script 5 7 | /usr/bin/mail -s "web server stats" somebody@otus.ru 
