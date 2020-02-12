@@ -1,1 +1,0 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/mora/git/otus_learning/sixth","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
