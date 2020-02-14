@@ -1,0 +1,113 @@
+root@backup:/etc/bacula# cat bacula-dir.conf
+Director { 
+Name = backup-dir 
+Dirport = 9101
+QueryFile = "/etc/bacula/scripts/query.sql" #набор sql запросов для работы с метаданными 
+WorkingDirectory = "/var/lib/bacula" 
+PidDirectory = "/var/run/bacula" 
+Password = "not for otus =) "
+Messages = Daemon
+DirAddress = 10.100.100.208
+}
+Catalog {
+Name = MyCatalog
+dbname = bacula; dbaddress = mysql2.server; dbuser = director; dbpassword = "AfsuW6ymcRyv"
+#dbname= bacula; dbuser = bacula; dbpassword = bacula;
+}
+Console {
+Name = backup-mon
+Password = "not for otus =) "
+CommandACL = status, .status
+}
+Console {
+  Name = "zabbix-agent.local"
+  Password = "not for otus =) "
+
+  Command ACL = show,list,llist,quit
+  Job ACL = *all*
+  Catalog ACL = *all*
+}
+Messages {
+Name = Daemon
+mailcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula daemon message\" %r"
+mail = mora@research.ru.com = all, !skipped
+console = all, !skipped, !saved
+append = "/var/lib/bacula/log" = all, !skipped
+}
+Messages {
+Name = Standard
+mailcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula daemon message\" %r"
+mail = mora@research.ru.com = all, !skipped
+console = all, !skipped, !saved
+append = "/var/lib/bacula/log" = all, !skipped
+mailcommand = "/etc/bacula/bacula-zabbix.bash %i"
+mail = 127.0.0.1 = all, !skipped
+}
+
+
+Storage { 
+Name = backups 
+Address = 10.100.100.208
+SDPort = 9103 
+Password = "not_for_otus =) " 
+Device = FileStorage
+Media Type = File
+}
+Schedule {
+Name = "WeeklyDiff"
+Run = Level=Full on mon at 01:01
+Run = Level=Differential on tue-sun at 02:02
+}
+Schedule {
+Name = "WeeklyFull"
+Run = Level=Full on mon-sun at 08:40
+} 
+FileSet {
+Name = default
+Include { 
+Options { 
+signature = MD5 #Для сверки используем MD5
+Compression=GZIP #Используем GZIP компрессию 
+} 
+File = /etc
+File = /boot
+File = /lib
+File = /lib64
+File = /usr
+File = /root
+File = /home
+File = /var
+File = /srv
+File = /opt #Что именно бекапить
+} 
+Exclude {
+File = /proc
+File = /var/run
+File = /tmp
+File = /run 
+File = /dev
+File = /mnt
+File = /sys
+}
+}
+Pool {
+Name = mainpool
+Pool Type = Backup
+Recycle = yes # Может ли бакула удалять задания из томов
+AutoPrune = yes # Может ли бакула очищать тома
+Volume Retention = 21 days # Как долго бакула должна "бояться" очистить том
+Maximum Volume Jobs = 70 # Сколько заданий хранить в каждом из томов
+Maximum Volumes = 5 # максимальное количество том которыми может #оперировать бакула
+Maximum Volume Bytes = 260G  
+}
+@/etc/bacula/clients/asterisk.conf
+@/etc/bacula/clients/gateway.conf
+@/etc/bacula/clients/mail.conf
+@/etc/bacula/clients/wiki.conf
+@/etc/bacula/clients/mysql1.conf
+@/etc/bacula/clients/mysql2.conf
+@/etc/bacula/clients/haproxy.conf
+@/etc/bacula/clients/zabbix.conf
+@/etc/bacula/clients/pve01.conf
+@/etc/bacula/clients/pve02.conf
+@/etc/bacula/clients/diman.conf

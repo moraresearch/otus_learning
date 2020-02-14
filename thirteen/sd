@@ -1,0 +1,30 @@
+root@backup:/etc/bacula# cat bacula-sd.conf 
+Storage { 
+Name = backups
+SDPort = 9103 
+WorkingDirectory = "/var/lib/bacula"
+Pid Directory = "/var/run/bacula"
+SDAddress = 10.100.100.208
+}
+Director {
+Name = backup-dir
+Password = "not for otus "
+}
+
+Device {
+Name = FileStorage
+Media Type = File
+Archive Device = /backup
+LabelMedia = yes; 
+Random Access = Yes;
+AutomaticMount = yes; 
+RemovableMedia = no;
+AlwaysOpen = yes;
+}
+
+Messages {
+Name = Standard
+director = backup-dir = all
+}
+
+
