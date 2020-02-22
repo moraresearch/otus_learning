@@ -22,15 +22,7 @@ FileSet {
       signature = MD5
       compression = GZIP
     }    
-File = /
-}
-  Exclude {
-    File = /var/lib/bacula
-    File = /proc
-    File = /tmp
-    File = /.journal
-    File = /.fsck
-    File = /bacula
+    File = /etc
   }
 }
 # Generic catalog service
@@ -51,21 +43,24 @@ Pool {
 }
 Storage { 
 Name = backups 
-Address = 127.0.0.1
+Address = 192.168.11.151
 SDPort = 9103 
 Password = "password" 
 Device = FileStorage
 Media Type = File
 }
 Schedule {
-Name = "WeeklyDiff"
-Run = Level=Full on mon at 01:01
-Run = Level=Differential on tue-sun at 02:02
+Name = "otus"
+Run = Level=Full daily at 0:22
+Run = Level=Differential hourly at 0:00
+Run = Level=Differential hourly at 0:30 
+Run = Level=Incremental hourly at 0:00
+Run = Level=Incremental hourly at 0:10
+Run = Level=Incremental hourly at 0:20
+Run = Level=Incremental hourly at 0:30
+Run = Level=Incremental hourly at 0:40
+Run = Level=Incremental hourly at 0:50
 }
-Schedule {
-Name = "WeeklyFull"
-Run = Level=Full on mon-sun at 08:40
-} 
 Job {
 Name = client-job #Имя задания
 Type = Backup #Тип работы(создание бекапа)
@@ -75,7 +70,7 @@ FileSet=default #Где описано как и какие файлы буде�
 Storage = backups #Куда будем «сливать» бекап
 Pool = mainpool #Определяем с каким «пулом»(как) будем работать
 Messages = Daemon #Как отрапортовать о проделанной работе
-Schedule = "WeeklyDiff" #По какому расписанию делать бекапы
+Schedule = "otus" #По какому расписанию делать бекапы
 }
 Job {
 Name = client-restore
@@ -93,10 +88,9 @@ Name = client-fd
 Address = 192.168.11.150
 FDPort = 9102
 Catalog = MyCatalog
-Password = bacula 
+Password = password
 File Retention = 28 days #Сколько сохранять метаданные о сохраненных файлах для 
 #данного клиента
 Job Retention = 28 days #Сколько сохранять метаданные касательно заданий для данного #клиента
 AutoPrune = yes #Может ли бакула очищать метаданные 
 }
-
