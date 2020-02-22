@@ -1,20 +1,18 @@
-root@wiki:/home/mora# cat /etc/bacula/bacula-fd.conf 
 Director {
-Name = backup-dir
-Password = not for otus
+Name = bacula-dir
+Password = password
 }
 
 FileDaemon { 
-Name = wiki-fd
+Name = client-fd
 FDport =9102 
 WorkingDirectory = /var/lib/bacula
-Pid Directory = /var/run/bacula
-FDAddress = wiki.server
+Pid Directory = /var/run
+FDAddress = 192.168.11.150
 }
 
 Messages {
-Name = Standard
+Name = Daemon
 director = backups-dir = all, !skipped, !restored
 }
-
 

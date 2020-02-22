@@ -1,0 +1,59 @@
+  filebeat:
+            spool_size : 8192
+            publish_async: true
+  filebeat.inputs:
+          - type: log
+            enabled: true
+            paths:
+                   - /var/log/rsyslog/*/su*.log
+            fields:
+                  type: auth
+            fields_under_root: true
+            scan_frequency: 5s
+          - type: log
+            enabled: true
+            paths:
+                   - /var/log/rsyslog/*/*syslog*.log
+            fields:
+                  type: syslog
+            fields_under_root: true
+            scan_frequency: 5s
+          - type: log
+            enabled: true
+            paths:
+                   - /var/log/rsyslog/*/system*.log
+            fields:
+                  type: syslog
+            fields_under_root: true
+            scan_frequency: 5s
+            enabled: true
+            paths:
+                   - /var/log/rsyslog/*/*nginx_access.log
+            fields:
+                  type: nginx_access
+            fields_under_root: true
+            scan_frequency: 5s
+          - type: log
+            enabled: true
+            paths:
+                   - /var/log/rsyslog/*/*nginx_error.log
+            fields:
+                  type: nginx_error
+            fields_under_root: true
+            scan_frequency: 5s
+          - type: log
+            enabled: true
+            paths:
+                   - /var/log/rsyslog/*/sshd.log
+            fields:
+                  type: sshd
+            fields_under_root: true
+            scan_frequency: 5s
+  output.logstash:
+            hosts: ["localhost:5044"]
+
+  xpack.monitoring:
+            enabled: true
+            elasticsearch:
+                    hosts: ["http://localhost:9200"]
+

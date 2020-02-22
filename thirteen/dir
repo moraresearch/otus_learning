@@ -1,31 +1,12 @@
-root@backup:/etc/bacula# cat bacula-dir.conf
-Director { 
-Name = backup-dir 
-Dirport = 9101
-QueryFile = "/etc/bacula/scripts/query.sql" #набор sql запросов для работы с метаданными 
-WorkingDirectory = "/var/lib/bacula" 
-PidDirectory = "/var/run/bacula" 
-Password = "not for otus =) "
-Messages = Daemon
-DirAddress = 10.100.100.208
-}
-Catalog {
-Name = MyCatalog
-dbname = bacula; dbaddress = mysql2.server; dbuser = director; dbpassword = "AfsuW6ymcRyv"
-#dbname= bacula; dbuser = bacula; dbpassword = bacula;
-}
-Console {
-Name = backup-mon
-Password = "not for otus =) "
-CommandACL = status, .status
-}
-Console {
-  Name = "zabbix-agent.local"
-  Password = "not for otus =) "
-
-  Command ACL = show,list,llist,quit
-  Job ACL = *all*
-  Catalog ACL = *all*
+Director {                            # define myself
+  Name = bacula-dir
+  DIRport = 9101                # where we listen for UA connections
+  QueryFile = "/etc/bacula/query.sql"
+  WorkingDirectory = "/var/spool/bacula"
+  PidDirectory = "/var/run"
+  Password = "password"         # Console password
+  Messages = Daemon
+  DirAddress = 192.168.11.151
 }
 Messages {
 Name = Daemon
@@ -34,22 +15,45 @@ mail = mora@research.ru.com = all, !skipped
 console = all, !skipped, !saved
 append = "/var/lib/bacula/log" = all, !skipped
 }
-Messages {
-Name = Standard
-mailcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula daemon message\" %r"
-mail = mora@research.ru.com = all, !skipped
-console = all, !skipped, !saved
-append = "/var/lib/bacula/log" = all, !skipped
-mailcommand = "/etc/bacula/bacula-zabbix.bash %i"
-mail = 127.0.0.1 = all, !skipped
+FileSet {
+  Name = "default"
+  Include {
+    Options {
+      signature = MD5
+      compression = GZIP
+    }    
+File = /
 }
-
-
+  Exclude {
+    File = /var/lib/bacula
+    File = /proc
+    File = /tmp
+    File = /.journal
+    File = /.fsck
+    File = /bacula
+  }
+}
+# Generic catalog service
+Catalog {
+  Name = MyCatalog
+# Uncomment the following line if you want the dbi driver
+# dbdriver = "dbi:postgresql"; dbaddress = 127.0.0.1; dbport =
+  dbname = "bacula"; dbuser = "bacula"; dbpassword = "password"
+}
+Pool {
+  Name = mainpool
+  Pool Type = Backup
+  Recycle = yes                       # Bacula can automatically recycle Volumes
+  AutoPrune = yes                     # Prune expired volumes
+  Volume Retention = 365 days         # one year
+  Maximum Volume Bytes = 50G          # Limit Volume size to something reasonable
+  Maximum Volumes = 100               # Limit number of Volumes in Pool
+}
 Storage { 
 Name = backups 
-Address = 10.100.100.208
+Address = 127.0.0.1
 SDPort = 9103 
-Password = "not_for_otus =) " 
+Password = "password" 
 Device = FileStorage
 Media Type = File
 }
@@ -62,52 +66,37 @@ Schedule {
 Name = "WeeklyFull"
 Run = Level=Full on mon-sun at 08:40
 } 
-FileSet {
-Name = default
-Include { 
-Options { 
-signature = MD5 #Для сверки используем MD5
-Compression=GZIP #Используем GZIP компрессию 
+Job {
+Name = client-job #Имя задания
+Type = Backup #Тип работы(создание бекапа)
+Level = Full #Уровень бекапа
+Client=client-fd #Клиент на котором будет производиться бекап
+FileSet=default #Где описано как и какие файлы будем сохранять
+Storage = backups #Куда будем «сливать» бекап
+Pool = mainpool #Определяем с каким «пулом»(как) будем работать
+Messages = Daemon #Как отрапортовать о проделанной работе
+Schedule = "WeeklyDiff" #По какому расписанию делать бекапы
+}
+Job {
+Name = client-restore
+Type = Restore 
+Client=client-fd
+FileSet=default
+Storage = backups 
+Pool = mainpool
+Messages = Daemon 
+Where = /
 } 
-File = /etc
-File = /boot
-File = /lib
-File = /lib64
-File = /usr
-File = /root
-File = /home
-File = /var
-File = /srv
-File = /opt #Что именно бекапить
-} 
-Exclude {
-File = /proc
-File = /var/run
-File = /tmp
-File = /run 
-File = /dev
-File = /mnt
-File = /sys
+ 
+Client {
+Name = client-fd
+Address = 192.168.11.150
+FDPort = 9102
+Catalog = MyCatalog
+Password = bacula 
+File Retention = 28 days #Сколько сохранять метаданные о сохраненных файлах для 
+#данного клиента
+Job Retention = 28 days #Сколько сохранять метаданные касательно заданий для данного #клиента
+AutoPrune = yes #Может ли бакула очищать метаданные 
 }
-}
-Pool {
-Name = mainpool
-Pool Type = Backup
-Recycle = yes # Может ли бакула удалять задания из томов
-AutoPrune = yes # Может ли бакула очищать тома
-Volume Retention = 21 days # Как долго бакула должна "бояться" очистить том
-Maximum Volume Jobs = 70 # Сколько заданий хранить в каждом из томов
-Maximum Volumes = 5 # максимальное количество том которыми может #оперировать бакула
-Maximum Volume Bytes = 260G  
-}
-@/etc/bacula/clients/asterisk.conf
-@/etc/bacula/clients/gateway.conf
-@/etc/bacula/clients/mail.conf
-@/etc/bacula/clients/wiki.conf
-@/etc/bacula/clients/mysql1.conf
-@/etc/bacula/clients/mysql2.conf
-@/etc/bacula/clients/haproxy.conf
-@/etc/bacula/clients/zabbix.conf
-@/etc/bacula/clients/pve01.conf
-@/etc/bacula/clients/pve02.conf
-@/etc/bacula/clients/diman.conf
+
