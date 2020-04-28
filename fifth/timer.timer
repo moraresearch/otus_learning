@@ -1,0 +1,10 @@
+[Unit]
+Description=Run service every 30s
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=30s
+Unit=otus_timer.service 
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,35 @@
+  filebeat:
+            spool_size : 8192
+            publish_async: true
+  filebeat.inputs:
+          - type: log
+            enabled: true
+            paths:
+                   - /var/log/auth.log
+            fields:
+                  type: auth
+            fields_under_root: true
+            scan_frequency: 5s
+          - type: log
+            enabled: true
+            paths:
+                   - /var/log/cron.log
+            fields:
+                  type: cron
+            fields_under_root: true
+            scan_frequency: 5s
+          - type: log
+            enabled: true
+            paths:
+                   - /var/log/messages
+            fields:
+                  type: syslog
+            fields_under_root: true
+            scan_frequency: 5s
+  output.logstash:
+            hosts: ["192.168.11.151:5044"]
+
+  xpack.monitoring:
+            enabled: true
+            elasticsearch:
+                    hosts: ["http://192.168.11.141:9200","192.168.11.142:9200","192.168.11.143:9200"]

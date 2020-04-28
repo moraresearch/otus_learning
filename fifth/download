@@ -1,0 +1,6 @@
+[Unit]
+Description=Move cron log from syslog to booring 
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/timer

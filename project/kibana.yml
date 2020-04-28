@@ -1,0 +1,7 @@
+server.host: "192.168.11.151"
+server.name: "kibana"
+elasticsearch.hosts: ["http://192.168.11.141:9200","http://192.168.11.142:9200","http://192.168.11.143:9200"]
+elasticsearch.preserveHost: false
+logging.dest: stdout
+logging.verbose: true
+
