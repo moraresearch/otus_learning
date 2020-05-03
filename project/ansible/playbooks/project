@@ -1,0 +1,5 @@
+-  hosts: "{{host}}"
+   become: yes 
+   ignore_errors: yes
+   roles: 
+    - project

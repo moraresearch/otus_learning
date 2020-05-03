@@ -1,0 +1,14 @@
+---
+        - name: Install filebeat
+          yum: 
+            name: filebeat
+            state: latest 
+        - name: Copy configuration 
+          shell: "cat /vagrant/filebeat.yml > /etc/filebeat/filebeat.yml ;"
+          register: shell_result 
+        - name: start and enable 
+          systemd:
+            state: started 
+            enabled: yes
+            name: filebeat
+

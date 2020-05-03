@@ -1,0 +1,27 @@
+Storage { 
+Name = backups
+SDPort = 9103 
+WorkingDirectory = "/var/lib/bacula"
+Pid Directory = "/var/run"
+SDAddress = 192.168.11.152
+}
+Director {
+Name = bacula-dir
+Password = "password"
+}
+
+Device {
+Name = FileStorage
+Media Type = File
+Archive Device ="/backup"
+LabelMedia = yes; 
+Random Access = Yes;
+AutomaticMount = yes; 
+RemovableMedia = no;
+AlwaysOpen = yes;
+}
+
+Messages {
+Name = Daemon
+director = backup-dir = all
+}

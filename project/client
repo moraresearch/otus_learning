@@ -1,0 +1,16 @@
+Director {
+Name = bacula-dir
+Password = password
+}
+
+FileDaemon { 
+Name = DNAME-fd
+FDport =9102 
+WorkingDirectory = /var/lib/bacula
+Pid Directory = /var/run/bacula
+}
+
+Messages {
+Name = Standard
+director = backups-dir = all, !skipped, !restored
+}

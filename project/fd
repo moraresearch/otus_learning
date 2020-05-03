@@ -1,0 +1,18 @@
+Director {
+Name = bacula-dir
+Password = password
+}
+
+FileDaemon { 
+Name = client-fd
+FDport =9102 
+WorkingDirectory = /var/lib/bacula
+Pid Directory = /var/run
+FDAddress = 192.168.11.150
+}
+
+Messages {
+Name = Daemon
+director = backups-dir = all, !skipped, !restored
+}
+

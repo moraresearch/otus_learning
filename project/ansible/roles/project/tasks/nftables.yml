@@ -1,0 +1,23 @@
+---
+        - name: install nftables 
+          yum: 
+            name: 
+              - nftables
+            state: latest
+        - name: sending configuration 
+          copy: 
+            src: files/nftables.conf
+            dest: /etc/nftables.conf
+            mode: 644
+            owner: root
+            group: root
+          become: yes
+          tags: copy_skel
+        - name: remove old firewall 
+          shell: for i in INPUT OUTPUT FORWARD VPN; do iptables -F $i ; done ; for u in PREROUTING POSTROUTING; do iptables it nat -F $u ; done ; rm /etc/iptables/rules.v4
+          register: shell_result 
+        - name: prepare configuration
+          shell: ip r | grep default | head -n1 | cut -d' ' -f5 | xargs -I line sed -i "s/MAIN/line/" /etc/nftables.conf
+          register: shell_result
+        - name: start nftables 
+          shell: nft -f /etc/nftables.conf ; systemctl enable nftables

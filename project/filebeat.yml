@@ -5,7 +5,7 @@
           - type: log
             enabled: true
             paths:
-                   - /var/log/auth.log
+                   - /var/log/secure
             fields:
                   type: auth
             fields_under_root: true
@@ -13,7 +13,7 @@
           - type: log
             enabled: true
             paths:
-                   - /var/log/cron.log
+                   - /var/log/cron
             fields:
                   type: cron
             fields_under_root: true

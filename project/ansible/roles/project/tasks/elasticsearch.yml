@@ -1,0 +1,14 @@
+---
+        - name: Install elastic
+          yum: 
+            name: elasticsearch
+            state: latest 
+        - name: Copy configuration 
+          shell: "cat /vagrant/{{ansible_nodename}} > /etc/elasticsearch/elasticsearch.yml "
+          register: shell_result 
+        - name: start and enable 
+          systemd:
+            name: elasticsearch
+            state: started 
+            enabled: yes
+

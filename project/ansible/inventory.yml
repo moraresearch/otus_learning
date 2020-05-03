@@ -1,0 +1,10 @@
+[cluster]
+    server1 ansible_host=192.168.11.141
+    server2 ansible_host=192.168.11.142
+    server3 ansible_host=192.168.11.143
+
+[service]
+    proxy   ansible_host=192.168.11.151
+    bacula  ansible_host=192.168.11.152
+[clients]
+    client  ansible_host=192.168.11.161

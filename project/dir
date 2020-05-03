@@ -1,0 +1,228 @@
+Director {                            # define myself
+  Name = bacula-dir
+  DIRport = 9101                # where we listen for UA connections
+  QueryFile = "/etc/bacula/query.sql"
+  WorkingDirectory = "/var/spool/bacula"
+  PidDirectory = "/var/run"
+  Password = "password"         # Console password
+  Messages = Daemon
+  DirAddress = 192.168.11.152
+}
+Messages {
+Name = Daemon
+mailcommand = "/usr/lib/bacula/bsmtp -h localhost -f \"\(Bacula\) \<%r\>\" -s \"Bacula daemon message\" %r"
+mail = mora@research.ru.com = all, !skipped
+console = all, !skipped, !saved
+append = "/var/lib/bacula/log" = all, !skipped
+}
+FileSet {
+  Name = "default"
+  Include {
+    Options {
+      signature = MD5
+      compression = GZIP
+    }    
+    File = /etc
+  }
+}
+# Generic catalog service
+Catalog {
+  Name = MyCatalog
+# Uncomment the following line if you want the dbi driver
+# dbdriver = "dbi:postgresql"; dbaddress = 127.0.0.1; dbport =
+  dbname = "bacula"; dbuser = "bacula"; dbpassword = "password"
+}
+Pool {
+  Name = mainpool
+  Pool Type = Backup
+  Recycle = yes                       # Bacula can automatically recycle Volumes
+  AutoPrune = yes                     # Prune expired volumes
+  Volume Retention = 365 days         # one year
+  Maximum Volume Bytes = 50G          # Limit Volume size to something reasonable
+  Maximum Volumes = 100               # Limit number of Volumes in Pool
+}
+Storage { 
+Name = backups 
+Address = 192.168.11.152
+SDPort = 9103 
+Password = "password" 
+Device = FileStorage
+Media Type = File
+}
+Schedule {
+Name = "otus"
+Run = Level=Full daily at 0:22
+Run = Level=Differential hourly at 0:00
+Run = Level=Differential hourly at 0:30 
+Run = Level=Incremental hourly at 0:00
+Run = Level=Incremental hourly at 0:10
+Run = Level=Incremental hourly at 0:20
+Run = Level=Incremental hourly at 0:30
+Run = Level=Incremental hourly at 0:40
+Run = Level=Incremental hourly at 0:50
+}
+Job {
+Name = client-job #Имя задания
+Type = Backup #Тип работы(создание бекапа)
+Level = Full #Уровень бекапа
+Client=client-fd #Клиент на котором будет производиться бекап
+FileSet=default #Где описано как и какие файлы будем сохранять
+Storage = backups #Куда будем «сливать» бекап
+Pool = mainpool #Определяем с каким «пулом»(как) будем работать
+Messages = Daemon #Как отрапортовать о проделанной работе
+Schedule = "otus" #По какому расписанию делать бекапы
+}
+Job {
+Name = client-restore
+Type = Restore 
+Client=client-fd
+FileSet=default
+Storage = backups 
+Pool = mainpool
+Messages = Daemon 
+Where = /
+} 
+ 
+Client {
+Name = client-fd
+Address = 192.168.11.161
+FDPort = 9102
+Catalog = MyCatalog
+Password = password
+File Retention = 28 days #Сколько сохранять метаданные о сохраненных файлах для 
+#данного клиента
+Job Retention = 28 days #Сколько сохранять метаданные касательно заданий для данного #клиента
+AutoPrune = yes #Может ли бакула очищать метаданные 
+}
+Job {
+Name = proxy-job #Имя задания
+Type = Backup #Тип работы(создание бекапа)
+Level = Full #Уровень бекапа
+Client=proxy-fd #Клиент на котором будет производиться бекап
+FileSet=default #Где описано как и какие файлы будем сохранять
+Storage = backups #Куда будем «сливать» бекап
+Pool = mainpool #Определяем с каким «пулом»(как) будем работать
+Messages = Daemon #Как отрапортовать о проделанной работе
+Schedule = "otus" #По какому расписанию делать бекапы
+}
+Job {
+Name = proxy-restore
+Type = Restore 
+Client=proxy-fd
+FileSet=default
+Storage = backups 
+Pool = mainpool
+Messages = Daemon 
+Where = /
+} 
+ 
+Client {
+Name = proxy-fd
+Address = 192.168.11.151
+FDPort = 9102
+Catalog = MyCatalog
+Password = password
+File Retention = 28 days #Сколько сохранять метаданные о сохраненных файлах для 
+#данного клиента
+Job Retention = 28 days #Сколько сохранять метаданные касательно заданий для данного #клиента
+AutoPrune = yes #Может ли бакула очищать метаданные 
+}
+Job {
+Name = server1-job #Имя задания
+Type = Backup #Тип работы(создание бекапа)
+Level = Full #Уровень бекапа
+Client=server1-fd #Клиент на котором будет производиться бекап
+FileSet=default #Где описано как и какие файлы будем сохранять
+Storage = backups #Куда будем «сливать» бекап
+Pool = mainpool #Определяем с каким «пулом»(как) будем работать
+Messages = Daemon #Как отрапортовать о проделанной работе
+Schedule = "otus" #По какому расписанию делать бекапы
+}
+Job {
+Name = server1-restore
+Type = Restore 
+Client=server1-fd
+FileSet=default
+Storage = backups 
+Pool = mainpool
+Messages = Daemon 
+Where = /
+} 
+ 
+Client {
+Name = server1-fd
+Address = 192.168.11.141
+FDPort = 9102
+Catalog = MyCatalog
+Password = password
+File Retention = 28 days #Сколько сохранять метаданные о сохраненных файлах для 
+#данного клиента
+Job Retention = 28 days #Сколько сохранять метаданные касательно заданий для данного #клиента
+AutoPrune = yes #Может ли бакула очищать метаданные 
+}
+Job {
+Name = server2-job #Имя задания
+Type = Backup #Тип работы(создание бекапа)
+Level = Full #Уровень бекапа
+Client=server2-fd #Клиент на котором будет производиться бекап
+FileSet=default #Где описано как и какие файлы будем сохранять
+Storage = backups #Куда будем «сливать» бекап
+Pool = mainpool #Определяем с каким «пулом»(как) будем работать
+Messages = Daemon #Как отрапортовать о проделанной работе
+Schedule = "otus" #По какому расписанию делать бекапы
+}
+Job {
+Name = server2-restore
+Type = Restore 
+Client=server2-fd
+FileSet=default
+Storage = backups 
+Pool = mainpool
+Messages = Daemon 
+Where = /
+} 
+ 
+Client {
+Name = server2-fd
+Address = 192.168.11.142
+FDPort = 9102
+Catalog = MyCatalog
+Password = password
+File Retention = 28 days #Сколько сохранять метаданные о сохраненных файлах для 
+#данного клиента
+Job Retention = 28 days #Сколько сохранять метаданные касательно заданий для данного #клиента
+AutoPrune = yes #Может ли бакула очищать метаданные 
+}
+Job {
+Name = server3-job #Имя задания
+Type = Backup #Тип работы(создание бекапа)
+Level = Full #Уровень бекапа
+Client=server3-fd #Клиент на котором будет производиться бекап
+FileSet=default #Где описано как и какие файлы будем сохранять
+Storage = backups #Куда будем «сливать» бекап
+Pool = mainpool #Определяем с каким «пулом»(как) будем работать
+Messages = Daemon #Как отрапортовать о проделанной работе
+Schedule = "otus" #По какому расписанию делать бекапы
+}
+Job {
+Name = server3-restore
+Type = Restore 
+Client=server3-fd
+FileSet=default
+Storage = backups 
+Pool = mainpool
+Messages = Daemon 
+Where = /
+} 
+ 
+Client {
+Name = server3-fd
+Address = 192.168.11.143
+FDPort = 9102
+Catalog = MyCatalog
+Password = password
+File Retention = 28 days #Сколько сохранять метаданные о сохраненных файлах для 
+#данного клиента
+Job Retention = 28 days #Сколько сохранять метаданные касательно заданий для данного #клиента
+AutoPrune = yes #Может ли бакула очищать метаданные 
+}

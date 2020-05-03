@@ -1,0 +1,17 @@
+---
+# tasks file for project
+     - name: Import elasticsearch
+       import_tasks: 'tasks/elasticsearch.yml'
+       when: elasticsearch == '1'
+     - name: Import bacula
+       import_tasks: 'tasks/bacula.yml'
+       when: bacula == '1'
+     - name: Import nftables
+       import_tasks: 'tasks/nftables.yml'
+       when: nft == '1'
+     - name: Import proxy 
+       import_tasks: 'tasks/proxy.yml'
+       when: proxy == '1'
+     - name: Import client 
+       import_tasks: 'tasks/client.yml'
+       when: client == '1'

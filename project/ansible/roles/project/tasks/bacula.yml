@@ -1,0 +1,13 @@
+---
+        - name: Install bacula 
+          yum: 
+            name: 
+              - bacula-client 
+            state: latest 
+        - name: Copy configuration
+          shell: "cat /vagrant/client > /etc/bacula/bacula-fd.conf ; sed -i 's/DNAME/{{ansible_nodename}}/' /etc/bacula/bacula-fd.conf ; mkdir /run/bacula ; mkdir /var/lib/bacula ; chown bacula:bacula -R /run/bacula ; chown bacula:bacula -R /var/lib/bacula" 
+          register: shell_result 
+        - name: restart bacula 
+          systemd:
+            state: restarted
+            name: bacula-fd 
