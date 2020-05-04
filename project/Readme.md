@@ -28,21 +28,21 @@
 
 Для начала надо подождать минут 10 чтобы там всё устаканилось ( пока логи запишутся пока примутся на отправку пока распарсятся logstash пока утрамбуются в elastic ) 
 Если всё это прошло, значит мы увидим какие либо индексы по этой ссылке: 
-http://192.168.11.151/app/kibana#/management/elasticsearch/index_management/indices 
+#### http://192.168.11.151/app/kibana#/management/elasticsearch/index_management/indices 
 
 Теперь надо проверить работу кластера: 
-curl -XGET http://192.168.11.142:9200/_cluster/health?pretty
+#### curl -XGET http://192.168.11.142:9200/_cluster/health?pretty
 
 данный запрос должен показать количество нод - 3 
 
 Теперь мы должны проверить работу бэкап сервера, в принципе достаточно зайти на него и проверить историю 
 
-ssh mora@192.168.11.152 -i ./id_rsa 
+#### ssh mora@192.168.11.152 -i ./id_rsa 
 
-sudo su 
+#### sudo su 
 
-bconsole 
+#### bconsole 
 
-status 5 
+#### status 5 
 
 
