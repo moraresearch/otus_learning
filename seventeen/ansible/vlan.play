@@ -1,0 +1,6 @@
+-  hosts: vlan
+   become: yes 
+   ignore_errors: yes
+   roles: 
+    - vlan
+

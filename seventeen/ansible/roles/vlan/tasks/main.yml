@@ -1,0 +1,16 @@
+---
+     - name: vconfig
+       import_tasks: 'tasks/vconfig.yml'
+     - name: configure testClient1
+       import_tasks: 'tasks/testClient1.yml'
+       when: ansible_nodename == 'testClient1'
+     - name: configure testClient2
+       import_tasks: 'tasks/testClient2.yml'
+       when: ansible_nodename == 'testClient2'
+     - name: configure testServer1
+       import_tasks: 'tasks/testServer1.yml'
+       when: ansible_nodename == 'testServer1'
+     - name: configure testServer2
+       import_tasks: 'tasks/testServer2.yml'
+       when: ansible_nodename == 'testServer2'
+

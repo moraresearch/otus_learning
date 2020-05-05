@@ -1,0 +1,6 @@
+-  hosts: bond 
+   become: yes 
+   ignore_errors: yes
+   roles: 
+    - bond
+

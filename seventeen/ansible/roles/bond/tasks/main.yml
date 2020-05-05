@@ -1,0 +1,10 @@
+---
+     - name: eth
+       import_tasks: 'tasks/eth.yml'
+     - name: configure inetRouter
+       import_tasks: 'tasks/inetRouter.yml'
+       when: ansible_nodename == 'inetRouter'
+     - name: configure centralRouter
+       import_tasks: 'tasks/centralRouter.yml'
+       when: ansible_nodename == 'centralRouter'
+

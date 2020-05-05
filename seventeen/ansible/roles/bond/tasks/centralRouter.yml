@@ -1,0 +1,10 @@
+        - name: sending configuration bond0 
+          copy: 
+            src=files/bond2
+            dest=/etc/sysconfig/network-scripts/ifcfg-bond0
+            mode=600
+            owner=root
+            group=root
+        - name: restart interfaces  
+          shell: ifdown eth2; ifdown eth3 ; ifup bond0  
+          register: shell_result 

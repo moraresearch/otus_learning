@@ -1,0 +1,8 @@
+[vlan]
+    testClient1 ansible_host=192.168.11.11
+    testClient2 ansible_host=192.168.11.12
+    testServer1 ansible_host=192.168.11.13
+    testServer2 ansible_host=192.168.11.14
+[bond]
+    inetRouter ansible_host=192.168.11.21
+    centralRouter ansible_host=192.168.11.22

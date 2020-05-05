@@ -1,0 +1,15 @@
+        - name: sending configuration eth2
+          copy: 
+            src=files/eth2 
+            dest=/etc/sysconfig/network-scripts/ifcfg-eth2
+            mode=600
+            owner=root
+            group=root
+        - name: sending configuration eth3
+          copy: 
+            src=files/eth3 
+            dest=/etc/sysconfig/network-scripts/ifcfg-eth3
+            mode=600
+            owner=root
+            group=root
+

@@ -1,0 +1,3 @@
+        - name: Configure vconfig 
+          shell: vconfig add eth1 6; ip add add 10.10.10.1/24 dev eth1.6; ifcfg eth1.6 up; ip r add 10.10.10.0/24 dev eth1.6
+          register: shell_result 
