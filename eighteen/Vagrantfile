@@ -1,0 +1,140 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+
+MACHINES = {
+:inetRouter => {
+        :box_name => "centos/7",
+        :ip_addr => '192.168.11.21',
+        :net => [
+                   {ip: '192.168.3.2', adapter: 2, netmask: "255.255.255.0", virtualbox__intnet: "router-net"},
+                   {ip: '192.168.2.2', adapter: 3, netmask: "255.255.255.0", virtualbox__intnet: "router-net"},
+                   {ip: '192.168.1.2', adapter: 4, netmask: "255.255.255.0", virtualbox__intnet: "router-net"}
+                ]
+  },
+  :centralRouter => {
+        :box_name => "centos/7",
+        :ip_addr => '192.168.11.22',
+        :net => [
+                   {ip: '192.168.3.3', adapter: 2, netmask: "255.255.255.0", virtualbox__intnet: "router-net"},
+                   {ip: '192.168.1.1', adapter: 3, netmask: "255.255.255.0", virtualbox__intnet: "router-net"},
+                   {ip: '192.168.2.1', adapter: 4, netmask: "255.255.255.0", virtualbox__intnet: "router-net"}
+                ]
+  },
+   :inetRouter2 => {
+        :box_name => "centos/7",
+        :ip_addr => '192.168.11.11',
+        :net => [
+                   {adapter: 3, auto_config: false, virtualbox__intnet: true},
+                   {adapter: 4, auto_config: false, virtualbox__intnet: true}
+                ]
+  }, 
+  :centralServer => {
+        :box_name => "centos/7",
+        :ip_addr => '192.168.11.14',
+        :net => [
+                   {adapter: 3, auto_config: false, virtualbox__intnet: true},
+                   {adapter: 4, auto_config: false, virtualbox__intnet: true},
+                ]
+  }
+}
+
+Vagrant.configure("2") do |config|
+
+  MACHINES.each do |boxname, boxconfig|
+
+    config.vm.define boxname do |box|
+
+        box.vm.box = boxconfig[:box_name]
+        box.vm.host_name = boxname.to_s
+
+        boxconfig[:net].each do |ipconf|
+          box.vm.network "private_network", ipconf
+        end
+        
+        if boxconfig.key?(:public)
+          box.vm.network "public_network", boxconfig[:public]
+        end
+        box.vm.network "private_network", ip: boxconfig[:ip_addr]
+        box.vm.provision "shell", inline: <<-SHELL
+          mkdir -p ~root/.ssh
+                cp ~vagrant/.ssh/auth* ~root/.ssh
+        SHELL
+        
+        case boxname.to_s
+        when "inetRouter"
+          box.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          groupadd sudo 
+          sudo su
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          usermod -aG sudo vagrant 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mora:mora -R /home/mora
+          setenforce 0
+          yum install iptables -y 
+          iptables-restore < /vagrant/iptables.rules 
+          sysctl -w net.ipv4.conf.all.forwarding=1
+          iptables -t nat -A POSTROUTING -j MASQUERADE          
+            SHELL
+        when "centralRouter"
+          box.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          groupadd sudo 
+          sudo su
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          usermod -aG sudo vagrant 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mora:mora -R /home/mora
+          yum install nmap -y 
+          setenforce 0
+            SHELL
+        when "inetRouter2"
+          box.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo -y
+          groupadd sudo 
+          sudo su
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          usermod -aG sudo vagrant 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mor a:mora -R /home/mora
+          iptables -t nat -A PREROUTING -p tcp -m tcp --dport 8080 -j DNAT --to-destination 192.168.11.14:80
+          sysctl -w net.ipv4.conf.all.forwarding=1
+          iptables -t nat -A POSTROUTING -j MASQUERADE 
+          setenforce 0
+            SHELL
+        when "centralServer"
+          box.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          groupadd sudo 
+          sudo su
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          usermod -aG sudo vagrant 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mora:mora -R /home/mora
+          setenforce 0
+          sysctl net.ipv4.conf.all.forwarding=1
+          sysctl -w net.ipv4.conf.eth1.rp_filter = 0
+          sysctl -w net.ipv4.conf.eth0.rp_filter = 0
+          echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0 
+          echo "GATEWAY=192.168.11.21" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+          systemctl restart network
+          ip r add default dev eth1 via 192.168.11.21
+          yum install nginx -y 
+          systemctl start nginx 
+            SHELL
+        end
+
+      end
+
+  end
+  
+  
+end
