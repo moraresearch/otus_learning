@@ -1,0 +1,105 @@
+[vagrant@client ~]$ iperf3 -c 10.10.0.1
+Connecting to host 10.10.0.1, port 5201
+[  4] local 10.10.0.2 port 46118 connected to 10.10.0.1 port 5201
+[ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+[  4]   0.00-1.00   sec  16.6 MBytes   139 Mbits/sec    7    110 KBytes       
+[  4]   1.00-2.01   sec  16.7 MBytes   139 Mbits/sec    9    126 KBytes       
+[  4]   2.01-3.00   sec  18.6 MBytes   156 Mbits/sec    5   95.1 KBytes       
+[  4]   3.00-4.00   sec  18.0 MBytes   151 Mbits/sec    9    118 KBytes       
+[  4]   4.00-5.00   sec  18.2 MBytes   153 Mbits/sec   17    128 KBytes       
+[  4]   5.00-6.00   sec  18.0 MBytes   152 Mbits/sec   13    104 KBytes       
+[  4]   6.00-7.00   sec  17.8 MBytes   149 Mbits/sec    8    120 KBytes       
+[  4]   7.00-8.00   sec  18.5 MBytes   155 Mbits/sec   23    126 KBytes       
+[  4]   8.00-9.00   sec  18.3 MBytes   153 Mbits/sec   16    139 KBytes       
+[  4]   9.00-10.00  sec  18.4 MBytes   155 Mbits/sec   14    107 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-10.00  sec   179 MBytes   150 Mbits/sec  121             sender
+[  4]   0.00-10.00  sec   179 MBytes   150 Mbits/sec                  receiver
+
+iperf Done.
+[vagrant@client ~]$ iperf3 -c 10.10.0.1
+Connecting to host 10.10.0.1, port 5201
+[  4] local 10.10.0.2 port 46122 connected to 10.10.0.1 port 5201
+[ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+[  4]   0.00-1.00   sec  17.2 MBytes   144 Mbits/sec    5   93.8 KBytes       
+[  4]   1.00-2.00   sec  18.0 MBytes   151 Mbits/sec   12    111 KBytes       
+[  4]   2.00-3.00   sec  18.3 MBytes   153 Mbits/sec    6    127 KBytes       
+[  4]   3.00-4.00   sec  18.2 MBytes   153 Mbits/sec   27    129 KBytes       
+[  4]   4.00-5.00   sec  18.8 MBytes   158 Mbits/sec   25    104 KBytes       
+[  4]   5.00-6.00   sec  18.7 MBytes   157 Mbits/sec   26    115 KBytes       
+[  4]   6.00-7.00   sec  18.3 MBytes   153 Mbits/sec   17    129 KBytes       
+[  4]   7.00-8.00   sec  18.4 MBytes   155 Mbits/sec   18    107 KBytes       
+[  4]   8.00-9.00   sec  18.4 MBytes   154 Mbits/sec    9   93.8 KBytes       
+[  4]   9.00-10.00  sec  18.0 MBytes   151 Mbits/sec    4    107 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-10.00  sec   182 MBytes   153 Mbits/sec  149             sender
+[  4]   0.00-10.00  sec   182 MBytes   153 Mbits/sec                  receiver
+
+iperf Done.
+[vagrant@client ~]$ iperf3 -c 10.10.0.1
+Connecting to host 10.10.0.1, port 5201
+[  4] local 10.10.0.2 port 46126 connected to 10.10.0.1 port 5201
+[ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+[  4]   0.00-1.00   sec  18.4 MBytes   154 Mbits/sec   14    116 KBytes       
+[  4]   1.00-2.00   sec  17.5 MBytes   147 Mbits/sec   10    139 KBytes       
+[  4]   2.00-3.00   sec  16.3 MBytes   137 Mbits/sec   11    110 KBytes       
+[  4]   3.00-4.00   sec  18.6 MBytes   155 Mbits/sec    8    115 KBytes       
+[  4]   4.00-5.01   sec  17.8 MBytes   149 Mbits/sec   12    115 KBytes       
+[  4]   5.01-6.01   sec  17.7 MBytes   149 Mbits/sec    6    131 KBytes       
+[  4]   6.01-7.00   sec  16.9 MBytes   143 Mbits/sec   14   95.1 KBytes       
+[  4]   7.00-8.00   sec  17.3 MBytes   145 Mbits/sec   15    107 KBytes       
+[  4]   8.00-9.00   sec  17.8 MBytes   149 Mbits/sec   12    123 KBytes       
+[  4]   9.00-10.01  sec  18.8 MBytes   156 Mbits/sec   13    108 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-10.01  sec   177 MBytes   148 Mbits/sec  115             sender
+[  4]   0.00-10.01  sec   177 MBytes   148 Mbits/sec                  receiver
+
+iperf Done.
+[vagrant@client ~]$ iperf3 -c 10.10.0.1
+Connecting to host 10.10.0.1, port 5201
+[  4] local 10.10.0.2 port 46130 connected to 10.10.0.1 port 5201
+[ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+[  4]   0.00-1.00   sec  16.1 MBytes   135 Mbits/sec    5    120 KBytes       
+[  4]   1.00-2.01   sec  19.0 MBytes   159 Mbits/sec   14    129 KBytes       
+[  4]   2.01-3.01   sec  17.9 MBytes   150 Mbits/sec    7    143 KBytes       
+[  4]   3.01-4.01   sec  18.0 MBytes   151 Mbits/sec   32    111 KBytes       
+[  4]   4.01-5.00   sec  17.7 MBytes   149 Mbits/sec   11   93.8 KBytes       
+[  4]   5.00-6.00   sec  18.5 MBytes   155 Mbits/sec    2    115 KBytes       
+[  4]   6.00-7.01   sec  18.4 MBytes   154 Mbits/sec    6   95.1 KBytes       
+[  4]   7.01-8.01   sec  17.6 MBytes   147 Mbits/sec    6    118 KBytes       
+[  4]   8.01-9.01   sec  18.4 MBytes   154 Mbits/sec   11    136 KBytes       
+[  4]   9.01-10.01  sec  18.4 MBytes   153 Mbits/sec   13    114 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-10.01  sec   180 MBytes   151 Mbits/sec  107             sender
+[  4]   0.00-10.01  sec   179 MBytes   150 Mbits/sec                  receiver
+
+iperf Done.
+[vagrant@client ~]$ ip a 
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 52:54:00:8a:fe:e6 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic eth0
+       valid_lft 85442sec preferred_lft 85442sec
+    inet6 fe80::5054:ff:fe8a:fee6/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:f1:38:fa brd ff:ff:ff:ff:ff:ff
+    inet 192.168.11.21/24 brd 192.168.11.255 scope global noprefixroute eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fef1:38fa/64 scope link 
+       valid_lft forever preferred_lft forever
+5: tun0: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UNKNOWN group default qlen 100
+    link/none 
+    inet 10.10.0.2/24 brd 10.10.0.255 scope global tun0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::4a87:8b3f:6746:70ef/64 scope link flags 800 
+       valid_lft forever preferred_lft forever

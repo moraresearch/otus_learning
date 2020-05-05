@@ -1,0 +1,97 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.define "servertap" do |servertap|
+    servertap.vm.hostname = "server.loc"
+    servertap.vm.network "private_network", ip: "192.168.11.10"
+    servertap.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          yum install -y openvpn iperf3
+          setenforce 0
+          cp /vagrant/static.key /etc/openvpn/
+          cat  /vagrant/servertap.conf > /etc/openvpn/server.conf
+          systemctl start openvpn@server
+          systemctl enable openvpn@server 
+          SHELL
+  end
+  config.vm.define "clienttap" do |clienttap|
+   clienttap.vm.hostname = "client.loc"
+   clienttap.vm.network "private_network", ip: "192.168.11.11"
+   clienttap.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          yum install -y openvpn iperf3
+          setenforce 0
+          cp /vagrant/static.key /etc/openvpn/
+          cat  /vagrant/clienttap.conf > /etc/openvpn/server.conf
+          systemctl start openvpn@server
+          systemctl enable openvpn@server 
+          SHELL
+ end
+  config.vm.define "servertun" do |servertun|
+    servertun.vm.hostname = "server.loc"
+    servertun.vm.network "private_network", ip: "192.168.11.20"
+    servertun.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          yum install -y openvpn iperf3
+          setenforce 0
+          cp /vagrant/static.key /etc/openvpn/
+          cat  /vagrant/servertun.conf > /etc/openvpn/server.conf
+          systemctl start openvpn@server
+          systemctl enable openvpn@server 
+          SHELL
+  end
+  config.vm.define "clienttun" do |clienttun|
+   clienttun.vm.hostname = "client.loc"
+   clienttun.vm.network "private_network", ip: "192.168.11.21"
+   clienttun.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          yum install -y openvpn iperf3
+          setenforce 0
+          cp /vagrant/static.key /etc/openvpn/
+          cat  /vagrant/clienttun.conf > /etc/openvpn/server.conf
+          systemctl start openvpn@server
+          systemctl enable openvpn@server 
+          SHELL
+ end
+  config.vm.define "client" do |client|
+    client.vm.hostname = "client"
+    client.vm.network "private_network", ip: "192.168.11.31"
+    client.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          yum install vim openvpn -y 
+          groupadd sudo 
+          sudo su
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          usermod -aG sudo vagrant 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mora:mora -R /home/mora
+          SHELL
+  end
+  config.vm.define "server" do |server|
+   server.vm.hostname = "server.loc"
+   server.vm.network "private_network", ip: "192.168.11.30"
+   server.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install sudo epel-release -y
+          yum install -y openvpn easy-rsa
+          echo "    StrictHostKeyChecking=no" >> /etc/ssh/ssh_config
+          setenforce 0 
+          sudo su
+          mkdir /root/.ssh 
+          cp /vagrant/id_rsa /root/.ssh/id_rsa 
+          mkdir /home/temp
+          cd /home/temp 
+          tar xf /vagrant/openvpn.tar
+          cp -rpf ./etc/openvpn/* /etc/openvpn 
+          scp /etc/openvpn/pki/ca.crt  mora@192.168.11.31:/home/mora
+          scp /etc/openvpn/pki/issued/client.crt   mora@192.168.11.31:/home/mora
+          scp /etc/openvpn/pki/private/client.key   mora@192.168.11.31:/home/mora
+          scp /etc/openvpn/client/client.conf    mora@192.168.11.31:/home/mora
+          systemctl start openvpn@server 
+          systemctl enable openvpn@server 
+          SHELL
+ end
+end
