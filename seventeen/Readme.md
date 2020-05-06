@@ -5,7 +5,7 @@ vlan.play настраивает vlan) на четырех машинах в о�
 bond.play настраивает бондинг на двух машинах.  
 
 Работу проводить так: 
-vagrant up 
-cd ansible 
-ansible-playbook ./vlan.play 
-ansible-playbook ./bond.play 
+#### vagrant up 
+#### cd ansible 
+#### ansible-playbook ./vlan.play 
+#### ansible-playbook ./bond.play 
