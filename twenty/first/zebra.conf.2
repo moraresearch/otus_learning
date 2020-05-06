@@ -1,0 +1,19 @@
+hostname r2
+password zebra 
+enable password zebra 
+!
+interface lo 
+ip address 127.0.0.1/8 
+!
+interface eth1
+description to_router1
+ip address 10.10.2.12/24
+ip forwarding 
+!
+interface eth2 
+description to_router3 
+ip address 10.10.3.12/24
+ip forwarding 
+! 
+log file /var/log/quagga/zebra.log 
+
