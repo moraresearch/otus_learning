@@ -23,6 +23,10 @@ MACHINES = {
         :box_name => "centos/7",
         :ip_addr => '192.168.11.152',
   },
+  :ansible => {
+        :box_name => "centos/7",
+        :ip_addr => '192.168.11.153',
+  },
   :client => {
         :box_name => "centos/7",
         :ip_addr => '192.168.11.161',
@@ -154,6 +158,11 @@ Vagrant.configure("2") do |config|
 one
 exit" | bconsole  
           SHELL
+      when "ansible"
+        box.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          yum install ansible python3 -y
+        SHELL
       when "client"
         box.vm.provision "shell", run: "always", inline: <<-SHELL
           yum install epel-release -y
