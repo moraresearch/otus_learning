@@ -12,8 +12,11 @@
   4. клиент - должен же кто то отправить данные в кластер 
 #### vagrant up
 
+Подключение к машине с ансиблом 
+vagrant ssh ansible 
+
  Переход в папку с ansible инфраструктурой 
-#### cd ansible 
+#### cd /vagrant/ansible 
  
 Разом настроить весь кластер elasitcsearch 
 #### ansible-playbook playbooks/project -e host=cluster -e elasticsearch=1
