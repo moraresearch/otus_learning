@@ -1,0 +1,15 @@
+[Unit]
+Description=Websocket camos service 
+After=network.target nss-lookup.target
+
+[Service]
+Type=simple
+ExecStart=/home/vagrant/my_flask_app/venv/bin/flask run
+User=root
+Group=root
+TimeoutStopSec=5
+KillMode=mixed
+Environment=FLASK_ENV=development
+[Install]
+WantedBy=multi-user.target
+

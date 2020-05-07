@@ -28,3 +28,10 @@ ping web1.dns.lab (resolved)
 ping web2.dns.lab (resolved)
 dig @192.168.50.10 www.newdns.lab (not resolved )
 
+Цель работы: 
+
+Настроить бинд так, чтобы он отдавал разным клиентам разные данные. 
+
+Решение: 
+
+В bind есть acl и view, решить всё через них.

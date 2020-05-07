@@ -1,0 +1,45 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.define "flask" do |flask|
+    flask.vm.hostname = "flask"
+    flask.vm.network "private_network", ip: "192.168.11.101"
+    flask.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          setenforce 0
+          yum install centos-release-scl -y 
+          yum install rh-python36 nginx -y
+          tar xf /vagrant/flask.tar     
+          cat /vagrant/nginx.conf > /etc/nginx/nginx.conf 
+          cp /vagrant/flask.service /etc/systemd/system/
+          systemctl daemon-reload 
+          systemctl start nginx flask
+          SHELL
+  end
+  config.vm.define "wordpress" do |wordpress|
+   wordpress.vm.hostname = "wordpress"
+   wordpress.vm.network "private_network", ip: "192.168.11.102"
+   wordpress.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release yum-utils -y
+          yum install mariadb-server nginx wget -y
+          wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+          rpm -Uvh remi-release-7.rpm
+          yum --enablerepo=remi,remi-php71 install php-fpm php-common -y 
+          yum --enablerepo=remi,remi-php71 install php-opcache php-pecl-apcu php-cli php-pear php-pdo php-mysqlnd php-pgsql php-pecl-mongodb php-pecl-redis php-pecl-memcache php-pecl-memcached php-gd php-mbstring php-mcrypt php-xml -y
+          echo "listen = /var/run/php-fpm/php.fcgi" >> /etc/php-fpm.d/www.conf
+          cat /vagrant/wp.nginx.conf > /etc/nginx/nginx.conf 
+          cd /opt 
+          wget http://wordpress.org/latest.tar.gz
+          tar xzf latest.tar.gz
+          cat /vagrant/wp-config.php > /opt/wordpress/wp-config.php 
+          systemctl start nginx mariadb php-fpm 
+          echo "create database wordpress; "| mysql
+          echo "grant all on  wordpress.* to wordpress@'localhost' identified by 'pass';  "| mysql
+          sudo su 
+          mysql wordpress < /vagrant/wp.sql 
+          setenforce 0
+          SHELL
+ end
+end
