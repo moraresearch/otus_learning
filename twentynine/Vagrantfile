@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.define "samba" do |samba|
+    samba.vm.hostname = "samba"
+    samba.vm.network "private_network", ip: "192.168.11.101"
+    samba.vm.provision "shell", run: "always", inline: <<-SHELL
+    yum install samba -y 
+    cat /vagrant/smb.conf > /etc/samba/smb.conf 
+    mkdir /srv/samba
+    mkdir /srv/samba/uploads
+    chmod -R 777 /srv/samba
+    setenforce 0 
+    systemctl restart smb nmb 
+    SHELL
+  end
+  config.vm.box = "centos/7"
+  config.vm.define "client" do |client|
+    client.vm.hostname = "client"
+    client.vm.network "private_network", ip: "192.168.11.102"
+    client.vm.provision "shell", run: "always", inline: <<-SHELL
+    yum install cifs-utils -y 
+    echo "//192.168.11.101/otus                     /mnt                    cifs    rw,guest        0 0" >> /etc/fstab 
+    cp /vagrant/otus.service /etc/systemd/system 
+    chmod u+x /etc/rc.local 
+    echo "sleep 10" >> /etc/rc.local
+    echo "mount -a" >> /etc/rc.local 
+    systemctl daemon-reload 
+    systemctl start otus.service 
+    systemctl enable otus.service 
+    SHELL
+  end
+end

@@ -1,0 +1,14 @@
+[Unit]
+
+Description=Runs /usr/local/bin/mystartup.sh
+
+  
+[Service]
+
+ExecStart=/etc/rc.local 
+
+
+[Install]
+
+WantedBy=multi-user.target
+
