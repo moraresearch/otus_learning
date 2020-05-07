@@ -1,0 +1,45 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.define "r1" do |r1|
+    r1.vm.hostname = "r1"
+    r1.vm.network "private_network", ip: "10.10.1.11"
+    r1.vm.network "private_network", ip: "10.10.2.11"
+    r1.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          setenforce 0
+          yum install quagga -y 
+          cat /vagrant/zebra.conf.1 > /etc/quagga/zebra.conf 
+          cat /vagrant/ospfd.conf.1 > /etc/quagga/ospfd.conf 
+          systemctl start zebra.service ospfd.service  
+          SHELL
+  end
+  config.vm.define "r2" do |r2|
+   r2.vm.hostname = "r2"
+   r2.vm.network "private_network", ip: "10.10.2.12"
+   r2.vm.network "private_network", ip: "10.10.3.12"
+   r2.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          setenforce 0
+          yum install quagga -y 
+          cat /vagrant/zebra.conf.2 > /etc/quagga/zebra.conf 
+          cat /vagrant/ospfd.conf.2 > /etc/quagga/ospfd.conf 
+          systemctl start zebra.service ospfd.service  
+          SHELL
+ end
+  config.vm.define "r3" do |r3|
+    r3.vm.hostname = "r3"
+    r3.vm.network "private_network", ip: "10.10.1.13"
+    r3.vm.network "private_network", ip: "10.10.3.13"
+    r3.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          setenforce 0
+          yum install quagga -y 
+          cat /vagrant/zebra.conf.3 > /etc/quagga/zebra.conf 
+          cat /vagrant/ospfd.conf.3 > /etc/quagga/ospfd.conf 
+          systemctl start zebra.service ospfd.service  
+          SHELL
+  end
+end

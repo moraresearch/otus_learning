@@ -1,0 +1,31 @@
+!
+! Zebra configuration saved from vty
+!   2020/05/06 01:21:45
+!
+hostname r3
+password zebra
+enable password zebra
+log file /var/log/quagga/zebra.log
+!
+interface eth0
+ ipv6 nd suppress-ra
+!
+interface eth1
+ description to_router1
+ ip address 10.10.1.13/24
+ ipv6 nd suppress-ra
+!
+interface eth2
+ description to_router2
+ ip address 10.10.3.13/24
+ ipv6 nd suppress-ra
+!
+interface lo
+ ip address 127.0.0.1/8
+!
+ip forwarding
+!
+!
+line vty
+!
+
