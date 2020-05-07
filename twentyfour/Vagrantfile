@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.define "master" do |master|
+    master.vm.hostname = "master"
+    master.vm.network "private_network", ip: "192.168.11.101"
+    master.vm.provision "shell", run: "always", inline: <<-SHELL
+        yum install mariadb-server -y 
+        cat /vagrant/master.cnf > /etc/my.cnf 
+        systemctl start mariadb 
+        sudo su
+        echo "grant REPLICATION SLAVE on *.* to repl@'%' identified by 'pass';" | mysql
+        echo "create database bet;" | mysql
+        mysql bet < /vagrant/bet.sql
+    SHELL
+  end
+  config.vm.define "slave" do |slave|
+   slave.vm.hostname = "slave"
+   slave.vm.network "private_network", ip: "192.168.11.102"
+   slave.vm.provision "shell", run: "always", inline: <<-SHELL
+        yum install mariadb-server -y
+        cat /vagrant/slave.cnf > /etc/my.cnf 
+        systemctl start mariadb   
+        sudo su
+        echo "change master to master_host='192.168.11.101', master_user='repl', master_password='pass', master_log_file = 'mysql-bin.000003', master_log_pos = 245;" |  mysql
+        echo "start slave;" | mysql
+    SHELL
+ end
+end
