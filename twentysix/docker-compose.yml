@@ -1,0 +1,58 @@
+version: "3"
+services: 
+  node1: 
+      image: hauptmedia/mariadb:10.1
+      container_name: node1
+      ports:
+        - "1306:3306"
+      environment: 
+        - MYSQL_ROOT_PASSWORD=test
+        - REPLICATION_PASSWORD=test
+        - GALERA=On
+        - NODE_NAME=node1
+        - CLUSTER_NAME=otus
+        - CLUSTER_ADDRESS=gcomm://
+      command: --wsrep-new-cluster
+      networks: 
+        front_net: 
+          ipv4_address: 192.168.10.111
+          aliases: 
+            - node1 
+  node2: 
+      image: hauptmedia/mariadb:10.1
+      container_name: node2
+      ports:
+        - '2306:3306'
+      environment: 
+        - REPLICATION_PASSWORD=test
+        - GALERA=On
+        - NODE_NAME=node2
+        - CLUSTER_NAME=otus
+        - CLUSTER_ADDRESS=gcomm://192.168.10.111
+      networks: 
+        front_net: 
+          ipv4_address: 192.168.10.112
+          aliases: 
+            - node2
+  node3: 
+      image: hauptmedia/mariadb:10.1
+      container_name: node3
+      ports:
+        - "3306:3306"
+      environment: 
+        - REPLICATION_PASSWORD=test
+        - GALERA=On
+        - NODE_NAME=node3
+        - CLUSTER_NAME=otus
+        - CLUSTER_ADDRESS=gcomm://192.168.10.111
+      networks: 
+        front_net: 
+          ipv4_address: 192.168.10.113
+          aliases: 
+            - node3
+networks: 
+  front_net:
+    ipam: 
+      driver: default
+      config: 
+        - subnet: 192.168.10.0/24

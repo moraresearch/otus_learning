@@ -1,0 +1,20 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.define "docker" do |docker|
+    docker.vm.hostname = "docker"
+    docker.vm.network "private_network", ip: "192.168.11.101"
+    docker.vm.provision "shell", run: "always", inline: <<-SHELL
+	yum install -y yum-utils
+	yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+	yum install docker-ce docker-ce-cli containerd.io docker-compose -y
+	systemctl start docker 
+    curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+    SHELL
+  end
+end
