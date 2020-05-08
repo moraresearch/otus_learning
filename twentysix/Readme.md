@@ -36,3 +36,17 @@ fe6529ef391b        hauptmedia/mariadb:10.1   "/entrypoint.sh mysq…"   9 secon
 14ac0f9e90d1        hauptmedia/mariadb:10.1   "/entrypoint.sh mysq…"   9 seconds ago       Up 5 seconds        4444/tcp, 0.0.0.0:3306->3306/tcp, 4567-4568/tcp   node3
 a282dd85c8da        hauptmedia/mariadb:10.1   "/entrypoint.sh --ws…"   9 seconds ago       Up 5 seconds        4444/tcp, 4567-4568/tcp, 0.0.0.0:1306->3306/tcp   node1
 ```
+Проверка: 
+Cобственно смысл кластера в том что это кластер) поэтому необходимо убедиться что ноды обьединены 
+```
+06:06 mora@station~/git/otus_learning/twentysix# echo "select VARIABLE_VALUE from information_schema.GLOBAL_STATUS where VARIABLE_NAME = 'wsrep_cluster_size';" | mysql -h192.168.11.101 -uroot -ptest -P1306
+VARIABLE_VALUE
+3
+06:07 mora@station~/git/otus_learning/twentysix# echo "select VARIABLE_VALUE from information_schema.GLOBAL_STATUS where VARIABLE_NAME = 'wsrep_cluster_size';" | mysql -h192.168.11.101 -uroot -ptest -P2306
+VARIABLE_VALUE
+3
+06:08 mora@station~/git/otus_learning/twentysix# echo "select VARIABLE_VALUE from information_schema.GLOBAL_STATUS where VARIABLE_NAME = 'wsrep_cluster_size';" | mysql -h192.168.11.101 -uroot -ptest -P3306
+VARIABLE_VALUE
+3
+```
+Так проверяется собран ли кластер и проброшены ли порты наружу. 
