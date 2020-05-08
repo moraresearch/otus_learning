@@ -1,0 +1,24 @@
+16:37 mora@station~/git/otus_learning/twentyfive# telnet 192.168.11.101 25
+Trying 192.168.11.101...
+Connected to 192.168.11.101.
+Escape character is '^]'.
+220 post.localdomain ESMTP Postfix
+HELO otus.ru
+250 post.localdomain
+MAIL FROM: <root@otus.ru>
+250 2.1.0 Ok
+RCPT TO: <vagrant@otus.ru>
+250 2.1.5 Ok
+DATA 
+354 End data with <CR><LF>.<CR><LF>
+Subject: Message by telnet
+
+Its a real difficult problem to solve, configure postfix so bad that it can recieve this message.        
+<CR><LF>.<CR><LF>
+
+.
+250 2.0.0 Ok: queued as 7564E7D2CD
+QUIT
+221 2.0.0 Bye
+Connection closed by foreign host.
+
