@@ -10,15 +10,15 @@ web1 - смотрит на клиент1
 web2 смотрит на клиент2
 
 ### Выполено : 
-vagrant ssh client 
-ping web1.dns.lab (resolved)
-ping web2.dns.lab (not resolved)
-dig @192.168.50.10 www.newdns.lab (to address 15 and 16)
+#### vagrant ssh client 
+#### ping web1.dns.lab (resolved)
+#### ping web2.dns.lab (not resolved)
+#### dig @192.168.50.10 www.newdns.lab (to address 15 and 16)
 
-vagrant ssh client2 
-ping web1.dns.lab (resolved)
-ping web2.dns.lab (resolved)
-dig @192.168.50.10 www.newdns.lab (not resolved )
+#### vagrant ssh client2 
+#### ping web1.dns.lab (resolved)
+#### ping web2.dns.lab (resolved)
+#### dig @192.168.50.10 www.newdns.lab (not resolved )
 ```
 06:39 mora@station~/git/otus_learning/twentyone# vagrant ssh client 
 DEPRECATION: The 'sudo' option for the Ansible provisioner is deprecated.
