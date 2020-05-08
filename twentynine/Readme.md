@@ -24,6 +24,12 @@ tmpfs                   49M     0   49M   0% /run/user/1000
 ```
 ####  5 cd /mnt/uploads
 ####  6 touch test 
+```
+[root@client vagrant]# touch /mnt/uploads/test 
+[root@client vagrant]# ls /mnt/uploads/test 
+/mnt/uploads/test
+```
+
 ####  7 shutdown -r now 
 ####  8 vagrant ssh client 
 ####  9 df -h 
