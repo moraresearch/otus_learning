@@ -22,5 +22,9 @@ Status: Downloaded newer image for moraresearch/22:latest
 <hr><center>nginx/1.17.10</center>
 </body>
 </html>
+[root@docker vagrant]# docker ps 
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+3d540602271e        moraresearch/22     "nginx -g 'daemon of…"   56 seconds ago      Up 55 seconds       0.0.0.0:80->80/tcp   mystifying_chaum
+
 ```
 
