@@ -1,0 +1,2 @@
+#!/bin/bash
+* * * * * root pg_dump -h 192.168.11.101 -U myuser -d mydb  > /backup/mydb.sql

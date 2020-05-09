@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.define "master" do |master|
+    master.vm.hostname = "master"
+    master.vm.network "private_network", ip: "192.168.11.101"
+    master.vm.provision "shell", run: "always", inline: <<-SHELL
+    yum install https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7.6-ppc64le/pgdg-redhat-repo-42.0-11.noarch.rpm -y 
+    yum install postgresql11-server vim -y 
+    /usr/pgsql-11/bin/postgresql-11-setup initdb
+    cat /vagrant/postgresql.conf.master > /var/lib/pgsql/11/data/postgresql.conf 
+    cat /vagrant/pg_hba.conf > /var/lib/pgsql/11/data/pg_hba.conf
+    systemctl start postgresql-11
+    echo "CREATE ROLE replication WITH REPLICATION PASSWORD 'passw0rd' LOGIN;" | sudo -u postgres psql
+    sudo -u postgres psql -c "SELECT pg_create_physical_replication_slot('standby_slot');"
+    sudo -u postgres psql -c 'create database mydb;'
+    sudo -u postgres psql -c "create user myuser with encrypted password 'mypass';"
+    sudo -u postgres psql -c "grant all privileges on database mydb to myuser;" 
+    SHELL
+  end
+  config.vm.define "slave" do |slave|
+    slave.vm.hostname = "slave"
+    slave.vm.network "private_network", ip: "192.168.11.102"
+    slave.vm.provision "shell", run: "always", inline: <<-SHELL
+    yum install https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7.6-ppc64le/pgdg-redhat-repo-42.0-11.noarch.rpm -y 
+    yum install postgresql11-server vim -y 
+    /usr/pgsql-11/bin/postgresql-11-setup initdb
+    systemctl stop postgresql-11
+    mkdir /backup
+    rm -Rf /var/lib/pgsql/11/data/*
+    echo 'passw0rd'  | su postgres -c "pg_basebackup -h 192.168.11.101 -D /var/lib/pgsql/11/data -P -U replication"
+    cat /vagrant/postgresql.conf.slave > /var/lib/pgsql/11/data/postgresql.conf
+    cat /vagrant/recovery.conf > /var/lib/pgsql/11/data/recovery.conf
+    chown postgres:postgres /var/lib/pgsql/11/data/recovery.conf
+    systemctl start postgresql-11
+    echo 'export PGPASSWORD="mypass"' >> /root/.bashrc
+    cat /vagrant/pg_backup > /etc/cron.d/pg_backup
+    SHELL
+ end
+end
