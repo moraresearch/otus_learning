@@ -1,0 +1,33 @@
+yum install https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat-repo-42.0-9.noarch.rpm state=present -y 
+yum install gnupg postgresql96 postgresql96-contrib postgresql96-server python-psycopg2 repmgr96 dnf -y 
+yum install gcc vim python3-pip python3-dev libpq-dev etcd python-pip -y
+dnf install python3-devel -y
+pip3 install --upgrade pip
+pip install psycopg2-binary
+pip install patroni[etcd]
+echo "\
+[Unit]
+Description=Runners to orchestrate a high-availability PostgreSQL
+After=syslog.target network.target
+
+[Service]
+Type=simple
+
+User=postgres
+Group=postgres
+
+ExecStart=/usr/local/bin/patroni /etc/patroni.yml
+
+KillMode=process
+
+TimeoutSec=30
+
+Restart=no
+
+[Install]
+WantedBy=multi-user.targ\
+" > /etc/systemd/system/patroni.service
+mkdir -p /data/patroni
+chown postgres:postgres /data/patroni
+chmod 700 /data/patroni
+touch /etc/patroni.yml

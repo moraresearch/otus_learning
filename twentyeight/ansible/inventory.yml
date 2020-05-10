@@ -1,0 +1,4 @@
+[cluster]
+    pgsql1 ansible_host=192.168.11.101
+    pgsql2 ansible_host=192.168.11.102
+    pgsql3 ansible_host=192.168.11.103 

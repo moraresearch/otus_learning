@@ -1,0 +1,13 @@
+---
+-  hosts: cluster
+   become: yes
+   ignore_errors: yes 
+   tasks:
+     - name: start etcd
+       systemd: 
+         name: etcd 
+         state: started 
+         enabled: yes 
+     - name: start patroni 
+       shell: systemctl start patroni
+       register: shell_result  

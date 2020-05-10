@@ -1,0 +1,87 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.define "pgsql1" do |pgsql1|
+    pgsql1.vm.hostname = "pgsql1"
+    pgsql1.vm.network "private_network", ip: "192.168.11.101"
+    pgsql1.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          cp /vagrant/elk.repo /etc/yum.repos.d/
+          yum install sudo python3 -y
+          groupadd sudo 
+          sudo su
+          usermod -aG sudo vagrant 
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mora:mora -R /home/mora
+          sudo /vagrant/yo 
+          cat /vagrant/etcd1.conf > /etc/etcd/etcd.conf 
+          cat /vagrant/patroni1.yml > /etc/patroni.yml 
+    SHELL
+  end
+  config.vm.define "pgsql2" do |pgsql2|
+    pgsql2.vm.hostname = "pgsql2"
+    pgsql2.vm.network "private_network", ip: "192.168.11.102"
+    pgsql2.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          cp /vagrant/elk.repo /etc/yum.repos.d/
+          yum install sudo python3 -y
+          groupadd sudo 
+          sudo su
+          usermod -aG sudo vagrant 
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mora:mora -R /home/mora
+          sudo /vagrant/yo 
+          cat /vagrant/etcd2.conf > /etc/etcd/etcd.conf 
+          cat /vagrant/patroni2.yml > /etc/patroni.yml 
+    SHELL
+ end
+  config.vm.define "pgsql3" do |pgsql3|
+    pgsql3.vm.hostname = "pgsql3"
+    pgsql3.vm.network "private_network", ip: "192.168.11.103"
+    pgsql3.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          cp /vagrant/elk.repo /etc/yum.repos.d/
+          yum install sudo python3 -y
+          groupadd sudo 
+          sudo su
+          usermod -aG sudo vagrant 
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mora:mora -R /home/mora
+          sudo /vagrant/yo 
+          cat /vagrant/etcd3.conf > /etc/etcd/etcd.conf 
+          cat /vagrant/patroni3.yml > /etc/patroni.yml 
+    SHELL
+ end
+  config.vm.define "haproxy" do |haproxy|
+    haproxy.vm.hostname = "haproxy"
+    haproxy.vm.network "private_network", ip: "192.168.11.110"
+    haproxy.vm.provision "shell", run: "always", inline: <<-SHELL
+          yum install epel-release -y
+          cp /vagrant/elk.repo /etc/yum.repos.d/
+          yum install sudo python3 -y
+          groupadd sudo 
+          sudo su
+          usermod -aG sudo vagrant 
+          useradd mora -G sudo -d /home/mora -s /bin/bash 
+          cat /vagrant/sudoers > /etc/sudoers
+          mkdir /home/mora/.ssh 
+          cp /vagrant/id_rsa.pub /home/mora/.ssh/authorized_keys
+          chown mora:mora -R /home/mora
+          yum install -y haproxy 
+          cat /vagrant/haproxy.cfg > /etc/haproxy/haproxy.cfg 
+          setenforce 0 
+          systemctl start haproxy 
+    SHELL
+ end
+end
