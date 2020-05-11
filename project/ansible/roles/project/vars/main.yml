@@ -1,7 +1,4 @@
 ---
 # vars file for project
-    elasticsearch: '0'
     bacula: '1'
     nft: '1'
-    proxy: '0'
-    client: '0'

@@ -2,7 +2,7 @@
 # tasks file for project
      - name: Import elasticsearch
        import_tasks: 'tasks/elasticsearch.yml'
-       when: elasticsearch == '1'
+       when: elasticsearch == 'here'
      - name: Import bacula
        import_tasks: 'tasks/bacula.yml'
        when: bacula == '1'
@@ -11,7 +11,7 @@
        when: nft == '1'
      - name: Import proxy 
        import_tasks: 'tasks/proxy.yml'
-       when: proxy == '1'
+       when: proxy == 'here'
      - name: Import client 
        import_tasks: 'tasks/client.yml'
-       when: client == '1'
+       when: client == 'here'

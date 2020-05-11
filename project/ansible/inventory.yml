@@ -1,10 +1,31 @@
-[cluster]
-    server1 ansible_host=192.168.11.141
-    server2 ansible_host=192.168.11.142
-    server3 ansible_host=192.168.11.143
+all: 
+    children:
+        cluster: 
+                hosts:
+                        server1:
+                                ansible_host: 192.168.11.141
+                        server2:
+                                ansible_host: 192.168.11.142
+                        server3:
+                                ansible_host: 192.168.11.143
+                vars: 
+                        elasticsearch: here
+                        proxy: 0
+                        client: 0
+        service: 
+                hosts: 
+                        proxy:
+                                ansible_host: 192.168.11.151
+                vars: 
+                        elasticsearch: 0
+                        proxy: here
+                        client: 0 
+        clients: 
+                hosts: 
+                        client1:
+                                ansible_host: 192.168.11.161
+                vars: 
+                        elasticsearch: 0 
+                        proxy: 0
+                        client: here
 
-[service]
-    proxy   ansible_host=192.168.11.151
-    bacula  ansible_host=192.168.11.152
-[clients]
-    client  ansible_host=192.168.11.161

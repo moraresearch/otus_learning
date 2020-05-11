@@ -4,7 +4,8 @@
 
 ### Выполнено: 
 #### vagrant up 
-#### cd ansible 
+#### vagrant ssh ansible
+#### cd /vagrant/ansible 
 #### ansible-playbook ./play 
 
 ### Проверка: 
